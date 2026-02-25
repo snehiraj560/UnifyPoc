@@ -22,6 +22,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
+          cache: false  # Avoid "Cache service responded with 400"
 
       - name: Setup Yarn (Corepack)
         run: corepack enable && corepack prepare yarn@4.5.0 --activate
@@ -46,6 +47,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
+          cache: false  # Avoid "Cache service responded with 400"
 
       - name: Setup Yarn (Corepack)
         run: corepack enable && corepack prepare yarn@4.5.0 --activate
@@ -55,9 +57,10 @@ jobs:
         run: yarn install
 
       - name: Setup EAS
-        uses: expo/expo-github-action@v8
+        uses: expo/expo-github-action@main  # @v8 uses deprecated cache API (causes 400)
         with:
           eas-version: latest
+          eas-cache: false  # Workaround if cache issues persist
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Publish EAS Update (OTA)
