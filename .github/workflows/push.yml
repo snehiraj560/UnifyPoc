@@ -1,0 +1,76 @@
+name: Push - Test & Deploy (Fingerprint → OTA or Build)
+
+on:
+  push:
+    branches:
+      - develop
+
+env:
+  EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: testapp
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'yarn'
+          cache-dependency-path: testapp/yarn.lock
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run tests
+        run: yarn test
+
+  deploy:
+    name: Deploy (OTA or Build)
+    needs: test
+    runs-on: ubuntu-latest
+    concurrency: push-deploy-${{ github.run_id }}
+    defaults:
+      run:
+        working-directory: testapp
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'yarn'
+          cache-dependency-path: testapp/yarn.lock
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Deploy (fingerprint → OTA or Build)
+        uses: expo/expo-github-action/continuous-deploy-fingerprint@v8
+        with:
+          profile: development
+          branch: development
+          working-directory: testapp
