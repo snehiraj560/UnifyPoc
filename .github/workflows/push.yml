@@ -59,6 +59,7 @@ jobs:
         with:
           eas-version: latest
           eas-cache: false  # Workaround if cache issues persist
+          packager: npm  # Avoid yarn failures in CI (expo action uses yarn by default)
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Publish EAS Update (OTA)
