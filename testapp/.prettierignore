@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+.expo/
+dist/
+web-build/
+build/
+
+# Generated
+*.lock
+yarn.lock
+package-lock.json
+
+# Native
+ios/
+android/
+
+# Assets
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.webp
+*.svg
+
+# Expo
+.expo-env.d.ts
