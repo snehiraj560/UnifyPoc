@@ -31,9 +31,11 @@ const config: ExpoConfig = {
     url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
   },
   ios: {
+    bundleIdentifier: 'com.snehi-raj.unifyapp',
     supportsTablet: true,
   },
   android: {
+    package: 'com.snehi_raj.unifyapp',
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#ffffff',
