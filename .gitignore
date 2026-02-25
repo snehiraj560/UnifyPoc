@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# IDE (keep .vscode/settings.json for shared format-on-save)
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.swp
+*.swo
+
+# Env files (secrets)
+.env
+.env.*
+.env*.local
