@@ -12,9 +12,6 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: testapp
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,21 +27,17 @@ jobs:
         run: corepack enable
 
       - name: Install dependencies
+        working-directory: testapp
         run: yarn install
 
       - name: Run tests
+        working-directory: testapp
         run: yarn test
 
   deploy:
     name: Deploy (OTA or Build)
     needs: test
     runs-on: ubuntu-latest
-    concurrency: push-deploy-${{ github.run_id }}
-    defaults:
-      run:
-        working-directory: testapp
-    permissions:
-      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -60,6 +53,7 @@ jobs:
         run: corepack enable
 
       - name: Install dependencies
+        working-directory: testapp
         run: yarn install
 
       - name: Setup EAS
@@ -68,9 +62,6 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Deploy (fingerprint → OTA or Build)
-        uses: expo/expo-github-action/continuous-deploy-fingerprint@v8
-        with:
-          profile: development
-          branch: development
-          working-directory: testapp
+      - name: Publish EAS Update (OTA)
+        working-directory: testapp
+        run: eas update --branch development --message "Deploy from CI (${{ github.sha }})" --non-interactive
